@@ -1,6 +1,15 @@
 #pragma once
 #include <enet.h>
+#include <conio.h>
 
+
+inline int getch_noblock()
+{
+	if (_kbhit())
+		return _getch();
+	else
+		return -1;
+}
 class ENet
 {
 	
@@ -20,13 +29,18 @@ public:
 	int SetupClient();
 	int ConnectClient();
 	void DisconnectClient();
-
+	void SendPacket(bool _reliable, const char* _dataStr) const;
+	void BroadcastPacket(bool _reliable, const char* _dataStr) const;
 	int SetupServer();
-
 
 	bool IsClient();
 	bool IsServer();
 	bool IsClientConnected();
+
+	void Update();
+
+	static int Main();
+	
 	
 protected:
 	void CleanUpClient();

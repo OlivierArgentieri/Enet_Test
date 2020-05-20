@@ -7,14 +7,5 @@
 
 int main()
 {
-	ENet *_networkLayer = new ENet();
-
-	if (!_networkLayer->Initialize())
-		return EXIT_FAILURE;
-
-	_networkLayer->SetupServer();
-
-
-	delete _networkLayer;
-	return 0;
+	return ENet::Main();
 }
