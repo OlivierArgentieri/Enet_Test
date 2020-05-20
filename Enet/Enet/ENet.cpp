@@ -46,6 +46,9 @@ int ENet::SetupClient()
 		fprintf(stderr,"An error occurred while trying to create an ENet client host.\n");
 		exit(EXIT_FAILURE);
 	}
+
+	m_mode = Mode::Client;
+
 	return 1;
 
 }
@@ -81,6 +84,9 @@ int ENet::SetupServer()
 		fprintf(stderr, "An error occurred while trying to create an ENet server host.\n");
 		exit(EXIT_FAILURE);
 	}
+
+	m_mode = Mode::Server;
+
 	return 1;
 	
 }
