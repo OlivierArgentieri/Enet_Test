@@ -1,7 +1,10 @@
-﻿  ENet.cpp
-d:\projets\pullgithub\enet_test\enet\enet\enet.cpp(60): warning C4101: 'peer': unreferenced local variable
-d:\projets\pullgithub\enet_test\enet\enet\enet.cpp(178): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 3 has type 'void *'
-d:\projets\pullgithub\enet_test\enet\enet\enet.cpp(189): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'void *'
-d:\projets\pullgithub\enet_test\enet\enet\enet.cpp(258): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'std::string'
-d:\projets\pullgithub\enet_test\enet\enet\enet.cpp(264): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'std::string'
+﻿  EClient.cpp
+  ENet.cpp
+D:\Projets\PullGithub\Enet_Test\Enet\Enet\ENet.cpp(59,12): warning C4101: 'peer': unreferenced local variable
+D:\Projets\PullGithub\Enet_Test\Enet\Enet\ENet.cpp(177,11): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 3 has type 'void *'
+D:\Projets\PullGithub\Enet_Test\Enet\Enet\ENet.cpp(188,11): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'void *'
+D:\Projets\PullGithub\Enet_Test\Enet\Enet\ENet.cpp(257,12): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'std::string'
+D:\Projets\PullGithub\Enet_Test\Enet\Enet\ENet.cpp(263,12): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'std::string'
+  Main.cpp
+  Generating Code...
   Enet.vcxproj -> D:\Projets\PullGithub\Enet_Test\Enet\Debug\Enet.exe

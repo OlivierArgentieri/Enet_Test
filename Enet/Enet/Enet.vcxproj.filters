@@ -21,9 +21,15 @@
     <ClCompile Include="ENet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="EClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ENet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EClient.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

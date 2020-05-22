@@ -35,7 +35,6 @@ int ENet::Initialize()
 
 int ENet::SetupClient()
 {
-	
 	m_host= enet_host_create(NULL /* create a client host */,
 		1 /* only allow 1 outgoing connection */,
 		2 /* allow up 2 channels to be used, 0 and 1 */,
