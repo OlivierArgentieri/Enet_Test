@@ -1,10 +1,11 @@
 ﻿  EClient.cpp
   ENet.cpp
-D:\Projets\PullGithub\Enet_Test\Enet\Enet\ENet.cpp(59,12): warning C4101: 'peer': unreferenced local variable
-D:\Projets\PullGithub\Enet_Test\Enet\Enet\ENet.cpp(177,11): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 3 has type 'void *'
-D:\Projets\PullGithub\Enet_Test\Enet\Enet\ENet.cpp(188,11): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'void *'
-D:\Projets\PullGithub\Enet_Test\Enet\Enet\ENet.cpp(257,12): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'std::string'
-D:\Projets\PullGithub\Enet_Test\Enet\Enet\ENet.cpp(263,12): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'std::string'
+D:\Projets\PullGithub\Enet_Test\Enet\Enet\ENet.cpp(190,11): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 3 has type 'void *'
+D:\Projets\PullGithub\Enet_Test\Enet\Enet\ENet.cpp(201,11): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'void *'
+D:\Projets\PullGithub\Enet_Test\Enet\Enet\ENet.cpp(227,11): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 3 has type 'void *'
+D:\Projets\PullGithub\Enet_Test\Enet\Enet\ENet.cpp(237,11): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'void *'
+D:\Projets\PullGithub\Enet_Test\Enet\Enet\ENet.cpp(306,12): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'std::string'
+D:\Projets\PullGithub\Enet_Test\Enet\Enet\ENet.cpp(312,12): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'std::string'
   Main.cpp
   Generating Code...
   Enet.vcxproj -> D:\Projets\PullGithub\Enet_Test\Enet\Debug\Enet.exe

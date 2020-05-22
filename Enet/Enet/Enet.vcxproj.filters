@@ -32,5 +32,8 @@
     <ClInclude Include="EClient.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

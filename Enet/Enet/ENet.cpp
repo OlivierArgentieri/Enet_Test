@@ -2,11 +2,12 @@
 #include <iostream>
 #include <cstdlib>
 #include <stdio.h>
+#include "EObject.h"
 
-ENet::ENet()
+MyEnet::ENet::ENet()
 {}
 
-ENet::~ENet()
+MyEnet::ENet::~ENet()
 {
 	switch (m_mode)
 	{
@@ -22,7 +23,7 @@ ENet::~ENet()
 	}
 }
 
-int ENet::Initialize()
+int MyEnet::ENet::Initialize()
 {
 	if (enet_initialize() != 0)
 	{
@@ -33,7 +34,7 @@ int ENet::Initialize()
 	return 1;
 }
 
-int ENet::SetupClient()
+int MyEnet::ENet::SetupClient()
 {
 	m_host= enet_host_create(NULL /* create a client host */,
 		1 /* only allow 1 outgoing connection */,
@@ -52,11 +53,10 @@ int ENet::SetupClient()
 
 }
 
-int ENet::ConnectClient()
+int MyEnet::ENet::ConnectClient()
 {
 	ENetAddress address;
 	ENetEvent event;
-	ENetPeer *peer;
 	/* Connect to some.server.net:1234. */
 	enet_address_set_host(&address, "127.0.0.1");
 	address.port = 1234;
@@ -85,12 +85,12 @@ int ENet::ConnectClient()
 	return 1;
 }
 
-void ENet::DisconnectClient()
+void MyEnet::ENet::DisconnectClient()
 {
 
 }
 
-void ENet::SendPacket(bool _reliable, const char* _dataStr) const
+void MyEnet::ENet::SendPacket(bool _reliable, const char* _dataStr) const
 {
 	// Create a reliable packet of content "_dataStr" 
 	ENetPacket * packet = enet_packet_create(_dataStr, strlen(_dataStr) + 1, _reliable ? ENET_PACKET_FLAG_RELIABLE : 0);
@@ -105,7 +105,23 @@ void ENet::SendPacket(bool _reliable, const char* _dataStr) const
 	// enet_host_service()
 }
 
-void ENet::BroadcastPacket(bool _reliable, const char * _dataStr) const
+void MyEnet::ENet::SendPacket(EObject* _object, bool _reliable, const char* _dataStr)
+{
+	if (_object == nullptr) return;
+	// Create a reliable packet of content "_dataStr" 
+	ENetPacket* packet = enet_packet_create(_dataStr, strlen(_dataStr) + 1, _reliable ? ENET_PACKET_FLAG_RELIABLE : 0);
+
+	/* Send the packet to the peer over channel id 0. /
+	/ One could also broadcast the packet by         /
+	/ enet_host_broadcast (host, 0, packet);         /*/
+	enet_peer_send(_object->GetPeer(), 0, packet);
+
+	/* One could just use enet_host_service() instead. */
+	enet_host_flush(_object->GetHost());
+	// enet_host_service()
+}
+
+void MyEnet::ENet::BroadcastPacket(bool _reliable, const char * _dataStr) const
 {
 	// Create a reliable packet of content "_dataStr" 
 	ENetPacket * packet = enet_packet_create(_dataStr, strlen(_dataStr) + 1, _reliable ? ENET_PACKET_FLAG_RELIABLE : 0);
@@ -115,7 +131,7 @@ void ENet::BroadcastPacket(bool _reliable, const char * _dataStr) const
 	enet_host_flush(m_host);
 }
 
-int ENet::SetupServer()
+int MyEnet::ENet::SetupServer()
 {
 	ENetAddress address;
 	/* Bind the server to the default localhost.     */
@@ -134,30 +150,27 @@ int ENet::SetupServer()
 		fprintf(stderr, "An error occurred while trying to create an ENet server host.\n");
 		exit(EXIT_FAILURE);
 	}
-
 	m_mode = Mode::Server;
 
 	return 1;
-	
 }
 
-bool ENet::IsClient()
+bool MyEnet::ENet::IsClient()
 {
 	return m_mode == Mode::Client;
 }
 
-bool ENet::IsServer()
+bool MyEnet::ENet::IsServer()
 {
 	return m_mode == Mode::Server;
-
 }
 
-bool ENet::IsClientConnected()
+bool MyEnet::ENet::IsClientConnected()
 {
 	return m_mode == Mode::Client && m_peer != nullptr;
-} 
+}
 
-void ENet::Update()
+void MyEnet::ENet::Update()
 {
 	ENetEvent event;
 	/* Wait up to 1000 milliseconds for an event. */
@@ -190,10 +203,46 @@ void ENet::Update()
 			event.peer->data = NULL;
 		}
 	}
-	
 }
 
-int ENet::Main()
+void MyEnet::ENet::Tick(EObject* _object)
+{
+	if (_object == nullptr) return;
+	ENetEvent event;
+	/* Wait up to 1000 milliseconds for an event. */
+	if (enet_host_service(_object->GetHost(), &event, 1000) > 0)
+	{
+		switch (event.type)
+		{
+		case ENET_EVENT_TYPE_CONNECT:
+			printf("A new client connected from %x:%u.\n",
+				event.peer->address.host,
+				event.peer->address.port);
+
+			/* Store any relevant client information here. */
+			event.peer->data = (void*)"Client information";
+			break;
+			
+		case ENET_EVENT_TYPE_RECEIVE:
+			printf("A packet of length %u containing %s was received from %s on channel %u.\n",
+				event.packet->dataLength,
+				event.packet->data,
+				event.peer->data,
+				event.channelID);
+			/* Clean up the packet now that we're done using it. */
+			enet_packet_destroy(event.packet);
+			break;
+
+		case ENET_EVENT_TYPE_DISCONNECT:
+			printf("%s disconnected.\n", event.peer->data);
+			/* Reset the peer's client information. */
+			event.peer->data = NULL;
+		}
+	}
+}
+
+
+int MyEnet::ENet::Main()
 {
 	ENet *_networkLayer = new ENet();
 
@@ -287,10 +336,9 @@ int ENet::Main()
 
 	delete _networkLayer;
 	return 0;
-
 }
 
-void ENet::CleanUpClient()
+void MyEnet::ENet::CleanUpClient()
 {
 	DisconnectClient();
 	enet_host_destroy(m_host);
@@ -298,7 +346,7 @@ void ENet::CleanUpClient()
 	m_host = nullptr;
 }
 
-void ENet::CleanUpServer()
+void MyEnet::ENet::CleanUpServer()
 {
 	enet_host_destroy(m_host);
 	m_mode = Mode::Unset;

@@ -162,6 +162,7 @@
   <ItemGroup>
     <ClInclude Include="EClient.h" />
     <ClInclude Include="ENet.h" />
+    <ClInclude Include="EObject.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

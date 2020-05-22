@@ -7,5 +7,5 @@
 
 int main()
 {
-	return ENet::Main();
+	return MyEnet::ENet::Main();
 }
