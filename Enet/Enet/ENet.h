@@ -29,7 +29,7 @@ namespace MyEnet
 		};
 
 
-		int Initialize();
+		static int Initialize();
 
 		int SetupClient();
 		int ConnectClient();

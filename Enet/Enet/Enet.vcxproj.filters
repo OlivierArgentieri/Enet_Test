@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\Client">
+      <UniqueIdentifier>{8fc4d9c0-c261-4cdc-b3c9-25de92dfdb81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Server">
+      <UniqueIdentifier>{6f150c73-d4a6-4cca-9402-468b2b4c8ece}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -24,15 +30,21 @@
     <ClCompile Include="EClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="EServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ENet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EClient.h">
+    <ClInclude Include="EObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EObject.h">
+    <ClInclude Include="EClient.h">
+      <Filter>Header Files\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="EServer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

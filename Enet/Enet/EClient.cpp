@@ -10,13 +10,16 @@ ENetPeer* EClient::GetPeer() const
 	return peer;
 }
 
+EClient::EClient(const char* _id)
+{
+	name = _id;
+	Init();
+	Setup();
+}
+
 void EClient::Init()
 {
-	if (enet_initialize() != 0)
-	{
-		fprintf(stderr, "An error occurred while initializing ENet.\n");
-	}
-	atexit(enet_deinitialize);
+	MyEnet::ENet::Initialize();
 }
 
 void EClient::Setup()
@@ -33,7 +36,7 @@ void EClient::Setup()
 	}
 }
 
-void EClient::Connect(const char* _hostname, int _port, int _timeout = 5000)
+void EClient::Connect(const char* _hostname, int _port, int _timeout)
 {
 	ENetAddress address;
 	ENetEvent event;
