@@ -17,6 +17,11 @@ EClient::EClient(const char* _id)
 	Setup();
 }
 
+EClient::~EClient()
+{
+	CleanUp();
+}
+
 void EClient::Init()
 {
 	MyEnet::ENet::Initialize();
@@ -68,7 +73,25 @@ void EClient::Tick()
 	MyEnet::ENet::Tick(this);
 }
 
-void EClient::SendPackets(bool _reliable, const char* _dataStr)
+void EClient::SendPacket(bool _reliable, const char* _dataStr)
 {
 	MyEnet::ENet::SendPacket(this, _reliable, _dataStr);
+}
+
+
+bool EClient::IsConnected()
+{
+	return peer != nullptr;
+}
+
+void EClient::CleanUp()
+{
+	Disconnect();
+	enet_host_destroy(host);
+	host = nullptr;
+
+}
+
+void EClient::Disconnect()
+{
 }

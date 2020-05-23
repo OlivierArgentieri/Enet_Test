@@ -1,15 +1,17 @@
 #pragma once
 #include <enet.h>
 #include <conio.h>
-#include "EObject.h"
+
+
+class EObject;
+
 
 
 inline int getch_noblock()
 {
 	if (_kbhit())
 		return _getch();
-	else
-		return -1;
+	return -1;
 }
 
 namespace MyEnet

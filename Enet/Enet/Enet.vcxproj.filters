@@ -13,39 +13,57 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Client">
+    <Filter Include="Source Files\ENetLib">
+      <UniqueIdentifier>{0b8360ae-f6d4-4084-884a-41f07eb75a06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ENetLib">
+      <UniqueIdentifier>{06cc9ba4-94e2-4809-8609-93ca609dab92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\EObject">
+      <UniqueIdentifier>{c12ff06e-76ff-45c0-baf4-6e91b28afbf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\EObject\Client">
       <UniqueIdentifier>{8fc4d9c0-c261-4cdc-b3c9-25de92dfdb81}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Server">
+    <Filter Include="Header Files\EObject\Server">
       <UniqueIdentifier>{6f150c73-d4a6-4cca-9402-468b2b4c8ece}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\EObject">
+      <UniqueIdentifier>{185c50f5-5fbe-412a-b32b-c450ff403d6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\EObject\Server">
+      <UniqueIdentifier>{cd960b45-5669-4791-8dfe-384b84ea6f44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\EObject\Client">
+      <UniqueIdentifier>{81cefee0-ff01-4107-ad58-e692be54fdd3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ENet.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="EServer.cpp">
+      <Filter>Source Files\EObject\Server</Filter>
     </ClCompile>
     <ClCompile Include="EClient.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\EObject\Client</Filter>
     </ClCompile>
-    <ClCompile Include="EServer.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="ENet.cpp">
+      <Filter>Source Files\ENetLib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ENet.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="EClient.h">
-      <Filter>Header Files\Client</Filter>
+      <Filter>Header Files\EObject\Client</Filter>
     </ClInclude>
     <ClInclude Include="EServer.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\EObject\Server</Filter>
+    </ClInclude>
+    <ClInclude Include="ENet.h">
+      <Filter>Header Files\ENetLib</Filter>
+    </ClInclude>
+    <ClInclude Include="EObject.h">
+      <Filter>Header Files\EObject</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

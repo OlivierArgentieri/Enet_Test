@@ -5,12 +5,14 @@
 #include "enet/enet.h"
 #include "Enet.h"
 #include "EClient.h"
+#include "EServer.h"
 
 int main()
 {
 
 	EObject* _networkLayer = nullptr;
 	EClient* _client = nullptr;
+	EServer* _server = nullptr;
 
 	
 	//return MyEnet::ENet::Main();
@@ -26,7 +28,7 @@ int main()
 		break;
 
 	case '2':
-		//_networkLayer->SetupServer();
+		_networkLayer = _server = new EServer();
 		break;
 
 	default:
@@ -69,29 +71,29 @@ int main()
 			{
 				std::string myMsg = "UnMessageDeTest";
 				printf("Sending %s to the server.\n", myMsg);
-				_networkLayer->SendPacket(false, myMsg.c_str());
+				_client->SendPacket(false, myMsg.c_str());
 			}
 			else
 			{
 				std::string myMsg = "UnMessageDeTestBroadcast";
 				printf("Sending %s to all the clients.\n", myMsg);
 
-				_networkLayer->BroadcastPacket(false, myMsg.c_str());
+				_server->BroadcastPacket(false, myMsg.c_str());
 			}
 			break;
 
 		case 'Q':
-			if (_networkLayer->IsClientConnected())
+			if (_client->IsConnected())
 			{
-				_networkLayer->DisconnectClient();
+				_networkLayer->Disconnect();
 				std::cout << "Press R to reconnect the Client to the server\n";
 			}
 			break;
 
 		case 'R':
-			if (_networkLayer->IsClient())
+			if (_client != nullptr)
 			{
-				_networkLayer->ConnectClient();
+				_client->Connect("localhost", 1234);
 				std::cout << "Press Q to disconnect Client\n";
 			}
 			break;
@@ -100,5 +102,6 @@ int main()
 
 
 	delete _networkLayer;
+	
 	return 0;
 }
