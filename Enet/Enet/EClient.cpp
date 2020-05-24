@@ -102,13 +102,10 @@ void EClient::Tick()
 				event.channelID);
 
 			packet_data = (char*)event.packet->data;
-			if (packet_data.find("DCNX") != std::string::npos)
-				printf("remove client");
 
-			else if (packet_data.find("CNX") != std::string::npos)
-				printf("Add new client");
-
-
+			if (packet_data.substr(0, packet_data.find(DELIMITER)) == "HANDSHAKE")
+				SetToken(packet_data);
+			
 			/* Clean up the packet now that we're done using it. */
 			enet_packet_destroy(event.packet);
 			break;
@@ -119,6 +116,11 @@ void EClient::Tick()
 			event.peer->data = NULL;
 		}
 	}
+}
+
+void EClient::SetToken(std::string _strData)
+{
+	
 }
 
 void EClient::SendPacket(bool _reliable, const char* _dataStr)

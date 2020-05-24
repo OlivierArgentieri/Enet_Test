@@ -1,6 +1,7 @@
 #pragma once
 #include "ENet.h"
 
+#define DELIMITER ':'
 class EObject
 {
 public :

@@ -8,7 +8,8 @@
 
 struct EServerClientData
 {
-	std::string id;
+	enet_uint32 id;
+	std::string ip;
 	std::string name;
 };
 
@@ -17,7 +18,7 @@ class EServer : public EObject
 {
 
 private:
-	std::map<std::string, EServerClientData> clients;
+	std::map<enet_uint32, EServerClientData> clients;
 	ENetHost* host;
 	ENetPeer* peer;
 
@@ -25,8 +26,8 @@ private:
 	void Init();
 	void Setup();
 
-	void RegisterClient(std::string _clientData);
-	void UnRegisterClient(std::string _clientData);
+	void RegisterClient(ENetEvent _event);
+	void UnRegisterClient(ENetEvent _event);
 
 public:
 	EServer();
@@ -38,8 +39,8 @@ public:
 	void CleanUp() override;
 	void Disconnect() override;
 	void BroadcastPacket(bool _reliable, const char* _dataStr);
+	void SendPacket(bool _reliable, const char* _dataStr, ENetPeer* _peer, ENetHost* _host);
 
 	void ShowConnectedUser();
-
+	void SendToken(ENetPeer _peer) const;
 };
-

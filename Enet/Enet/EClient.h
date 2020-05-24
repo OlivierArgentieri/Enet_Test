@@ -9,12 +9,14 @@ private:
 	std::string name;
 	ENetHost* host;
 	ENetPeer* peer;
-
+	std::string serverToken;
+	
 	void Init();
 	void Setup();
 
 	void Tick() override;
 
+	void SetToken(std::string _strData);
 
 public:
 

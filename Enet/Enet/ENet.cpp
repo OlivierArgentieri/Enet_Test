@@ -86,9 +86,7 @@ int MyEnet::ENet::ConnectClient()
 }
 
 void MyEnet::ENet::DisconnectClient()
-{
-
-}
+{}
 
 void MyEnet::ENet::SendPacket(bool _reliable, const char* _dataStr) const
 {
@@ -233,11 +231,6 @@ void MyEnet::ENet::Tick(EObject* _object)
 				event.channelID);
 
 			packet_data = (char*)event.packet->data;
-			if (packet_data.find("DCNX") != std::string::npos)
-				printf("remove client");
-			
-			else if(packet_data.find("CNX") != std::string::npos)
-				printf("Add new client");
 			
 			
 			/* Clean up the packet now that we're done using it. */

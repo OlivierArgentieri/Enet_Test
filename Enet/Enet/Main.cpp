@@ -9,7 +9,6 @@
 
 int main()
 {
-
 	EObject* _networkLayer = nullptr;
 	EClient* _client = nullptr;
 	EServer* _server = nullptr;
@@ -51,7 +50,6 @@ int main()
 	}
 
 	bool bContinue = true;
-
 	do
 	{
 		_networkLayer->Tick();
