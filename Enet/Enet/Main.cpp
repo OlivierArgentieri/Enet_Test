@@ -24,7 +24,7 @@ int main()
 	{
 	case '1':
 		_networkLayer = _client = new EClient("test");
-		_client->Connect("localhost", 1234);
+		_client->Connect("127.0.0.1", 1234);
 		break;
 
 	case '2':
@@ -47,6 +47,7 @@ int main()
 	else
 	{
 		std::cout << "Press S to send a message to all the clients\n";
+		std::cout << "Press L to view list of clients connected \n";
 	}
 
 	bool bContinue = true;
@@ -69,16 +70,16 @@ int main()
 		case 'S':
 			if (_client != nullptr)
 			{
-				std::string myMsg = "UnMessageDeTest";
+				const char* myMsg = "UnMessageDeTest";
 				printf("Sending %s to the server.\n", myMsg);
-				_client->SendPacket(false, myMsg.c_str());
+				_client->SendPacket(false, myMsg);
 			}
 			else
 			{
-				std::string myMsg = "UnMessageDeTestBroadcast";
+				const char* myMsg = "UnMessageDeTestBroadcast";
 				printf("Sending %s to all the clients.\n", myMsg);
 
-				_server->BroadcastPacket(false, myMsg.c_str());
+				_server->BroadcastPacket(false, myMsg);
 			}
 			break;
 
@@ -95,6 +96,12 @@ int main()
 			{
 				_client->Connect("localhost", 1234);
 				std::cout << "Press Q to disconnect Client\n";
+			}
+
+		case 'L':
+			if (_server != nullptr)
+			{
+				_server->ShowConnectedUser();
 			}
 			break;
 		}

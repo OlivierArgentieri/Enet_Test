@@ -1,9 +1,12 @@
 #include "EServer.h"
 #include <cstdio>
+#include <string>
+#include "Utils.h"
 
 
 EServer::EServer()
 {
+	clients = std::map<std::string, EServerClientData>();
 	Init();
 	Setup();
 }
@@ -51,7 +54,50 @@ ENetPeer* EServer::GetPeer() const
 
 void EServer::Tick()
 {
-	MyEnet::ENet::Tick(this);
+	//MyEnet::ENet::Tick(this);
+
+	ENetEvent event;
+	std::string packet_data;
+	std::string _delimiter = ":";
+	/* Wait up to 1000 milliseconds for an event. */
+	if (enet_host_service(host, &event, 1000) > 0)
+	{
+		switch (event.type)
+		{
+		case ENET_EVENT_TYPE_CONNECT:
+			printf("A new client connected from %x:%u\n",
+				event.peer->address.host,
+				event.peer->address.port);
+
+			/* Store any relevant client information here. */
+			//event.peer->data = (void*)"Client information";
+			break;
+
+		case ENET_EVENT_TYPE_RECEIVE:
+			printf("A packet of length %u containing %s was received from %s on channel %u.\n",
+				event.packet->dataLength,
+				event.packet->data,
+				event.peer->data,
+				event.channelID);
+
+			packet_data = (char*)event.packet->data;
+			if (packet_data.substr(0, packet_data.find(_delimiter)) == "CNX")
+				RegisterClient(packet_data);
+
+			if (packet_data.substr(0, packet_data.find(_delimiter)) == "DCNX")
+				UnRegisterClient(packet_data);
+
+			
+			/* Clean up the packet now that we're done using it. */
+			enet_packet_destroy(event.packet);
+			break;
+
+		case ENET_EVENT_TYPE_DISCONNECT:
+			printf("%s disconnected.\n", event.peer->data);
+			/* Reset the peer's client information. */
+			event.peer->data = NULL;
+		}
+	}
 }
 
 void EServer::CleanUp()
@@ -72,4 +118,61 @@ void EServer::BroadcastPacket(bool _reliable, const char* _dataStr)
 	enet_host_broadcast(host, 0, packet);
 
 	enet_host_flush(host);
+}
+
+void EServer::RegisterClient(std::string _clientData)
+{
+	printf("Add new client");
+
+	std::vector<std::string> _splitData = Utils::Utils::SplitString(_clientData, ':');
+
+	if (_splitData.empty())
+	{
+		printf("ERROR on ADD clients");
+		return;
+	}
+	
+	std::string _name = _splitData[1];
+	std::string _id = _splitData[2];
+	EServerClientData _client = EServerClientData
+	{
+		_id,
+		_name
+	};
+
+	clients[_id] = _client;
+}
+
+void EServer::UnRegisterClient(std::string _clientData)
+{
+	std::vector<std::string> _splitData = Utils::Utils::SplitString(_clientData, ':');
+
+	if (_splitData.empty())
+	{
+		printf("ERROR on remove client");
+		return;
+	}
+	printf("remove client");
+	std::string _id = _splitData[2];
+
+	if (clients.empty()) return;
+
+	clients.erase(_id);
+}
+
+
+void EServer::ShowConnectedUser()
+{
+	if(clients.empty())
+	{
+		printf("0 Clients Connected \n");
+		return;
+	}
+	
+	printf("Connected Clients: \n");
+
+	for (std::pair<std::string, EServerClientData> _client : clients)
+	{
+		printf("%s with id : %s \n", clients[_client.first].name.c_str(), clients[_client.first].id.c_str());
+	}
 }

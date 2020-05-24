@@ -159,12 +159,14 @@
     <ClCompile Include="ENet.cpp" />
     <ClCompile Include="EServer.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EClient.h" />
     <ClInclude Include="ENet.h" />
     <ClInclude Include="EObject.h" />
     <ClInclude Include="EServer.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

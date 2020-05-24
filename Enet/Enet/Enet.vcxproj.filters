@@ -37,6 +37,12 @@
     <Filter Include="Source Files\EObject\Client">
       <UniqueIdentifier>{81cefee0-ff01-4107-ad58-e692be54fdd3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{b71a9cd2-6aae-4908-8903-88622ed16702}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utils">
+      <UniqueIdentifier>{9b89d0dc-4f96-40fb-a80d-ce0c362e688c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -51,6 +57,9 @@
     <ClCompile Include="ENet.cpp">
       <Filter>Source Files\ENetLib</Filter>
     </ClCompile>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EClient.h">
@@ -64,6 +73,9 @@
     </ClInclude>
     <ClInclude Include="EObject.h">
       <Filter>Header Files\EObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

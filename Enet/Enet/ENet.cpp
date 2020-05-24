@@ -209,18 +209,20 @@ void MyEnet::ENet::Tick(EObject* _object)
 {
 	if (_object == nullptr) return;
 	ENetEvent event;
+	std::string packet_data;
 	/* Wait up to 1000 milliseconds for an event. */
 	if (enet_host_service(_object->GetHost(), &event, 1000) > 0)
 	{
 		switch (event.type)
 		{
 		case ENET_EVENT_TYPE_CONNECT:
-			printf("A new client connected from %x:%u.\n",
+			printf("A new client connected from %x:%u from : %s.\n",
 				event.peer->address.host,
-				event.peer->address.port);
+				event.peer->address.port,
+				event.peer->data);
 
 			/* Store any relevant client information here. */
-			event.peer->data = (void*)"Client information";
+			//event.peer->data = (void*)"Client information";
 			break;
 			
 		case ENET_EVENT_TYPE_RECEIVE:
@@ -229,6 +231,15 @@ void MyEnet::ENet::Tick(EObject* _object)
 				event.packet->data,
 				event.peer->data,
 				event.channelID);
+
+			packet_data = (char*)event.packet->data;
+			if (packet_data.find("DCNX") != std::string::npos)
+				printf("remove client");
+			
+			else if(packet_data.find("CNX") != std::string::npos)
+				printf("Add new client");
+			
+			
 			/* Clean up the packet now that we're done using it. */
 			enet_packet_destroy(event.packet);
 			break;
