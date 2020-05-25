@@ -59,7 +59,7 @@ int MyEnet::ENet::ConnectClient()
 	ENetEvent event;
 	/* Connect to some.server.net:1234. */
 	enet_address_set_host(&address, "127.0.0.1");
-	address.port = 1234;
+	address.port = PORT;
 	/* Initiate the connection, allocating the two channels 0 and 1. */
 	m_peer = enet_host_connect(m_host, &address, 2, 0);
 	if (m_peer == NULL)

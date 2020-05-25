@@ -26,7 +26,7 @@ private:
 	void Init();
 	void Setup();
 
-	void RegisterClient(ENetEvent _event);
+	enet_uint32 RegisterClient(ENetEvent _event);
 	void UnRegisterClient(ENetEvent _event);
 
 public:
@@ -39,8 +39,8 @@ public:
 	void CleanUp() override;
 	void Disconnect() override;
 	void BroadcastPacket(bool _reliable, const char* _dataStr);
-	void SendPacket(bool _reliable, const char* _dataStr, ENetPeer* _peer, ENetHost* _host);
+	void SendPacket(bool _reliable, const char* _dataStr, ENetPeer* _peer, ENetHost* _host) const ;
 
 	void ShowConnectedUser();
-	void SendToken(ENetPeer _peer) const;
+	void SendTokenToClient(enet_uint32 _clientID);
 };

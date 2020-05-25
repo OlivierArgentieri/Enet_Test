@@ -1,5 +1,7 @@
 #include "ENet.h"
 #include "EClient.h"
+#include <iostream>
+#include "Utils.h"
 
 ENetHost* EClient::GetHost() const
 {
@@ -98,12 +100,12 @@ void EClient::Tick()
 			printf("A packet of length %u containing %s was received from %s on channel %u.\n",
 				event.packet->dataLength,
 				event.packet->data,
-				event.peer->data,
+				Utils::Utils::HexaDumpReverseToIP(event.peer->address.host).c_str(),
 				event.channelID);
 
 			packet_data = (char*)event.packet->data;
 
-			if (packet_data.substr(0, packet_data.find(DELIMITER)) == "HANDSHAKE")
+			if (packet_data.substr(0, packet_data.find(DELIMITER)) == "TOKEN")
 				SetToken(packet_data);
 			
 			/* Clean up the packet now that we're done using it. */
@@ -120,7 +122,7 @@ void EClient::Tick()
 
 void EClient::SetToken(std::string _strData)
 {
-	
+	std:std::cout << "RECEIVE TOKEN" << std::endl;
 }
 
 void EClient::SendPacket(bool _reliable, const char* _dataStr)

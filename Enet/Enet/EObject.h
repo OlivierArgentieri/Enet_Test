@@ -2,6 +2,7 @@
 #include "ENet.h"
 
 #define DELIMITER ':'
+#define PORT 1234
 class EObject
 {
 public :

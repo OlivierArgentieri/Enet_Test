@@ -23,7 +23,7 @@ void EServer::Setup()
 	/* enet_address_set_host (& address, "x.x.x.x"); */
 	address.host = ENET_HOST_ANY;
 	/* Bind the server to port 1234. */
-	address.port = 1234;
+	address.port = PORT;
 	host = enet_host_create(&address /* the address to bind the server host to */,
 		32      /* allow up to 32 clients and/or outgoing connections */,
 		2      /* allow up to 2 channels to be used, 0 and 1 */,
@@ -73,7 +73,7 @@ void EServer::Tick()
 			break;
 
 		case ENET_EVENT_TYPE_RECEIVE:
-			printf("A packet of length %u containing %p was received from %s on channel %u.\n",
+			printf("A packet of length %u containing %s was received from %s on channel %u.\n",
 				event.packet->dataLength,
 				event.packet->data,
 				Utils::Utils::HexaDumpReverseToIP(event.peer->address.host).c_str(),
@@ -82,8 +82,8 @@ void EServer::Tick()
 			packet_data = (char*)event.packet->data;
 			if (packet_data.substr(0, packet_data.find(_delimiter)) == "CNX")
 			{
-				RegisterClient(event);
-				//SendToken(event.peer);
+				enet_uint32 _clientId = RegisterClient(event);
+				SendTokenToClient(_clientId);
 			}
 
 			if (packet_data.substr(0, packet_data.find(_delimiter)) == "DCNX")
@@ -122,7 +122,7 @@ void EServer::BroadcastPacket(bool _reliable, const char* _dataStr)
 	enet_host_flush(host);
 }
 
-void EServer::SendPacket(bool _reliable, const char* _dataStr, ENetPeer *_peer, ENetHost *_host)
+void EServer::SendPacket(bool _reliable, const char* _dataStr, ENetPeer *_peer, ENetHost *_host) const
 {
 	// Create a reliable packet of content "_dataStr" 
 	ENetPacket* packet = enet_packet_create(_dataStr, strlen(_dataStr) + 1, _reliable ? ENET_PACKET_FLAG_RELIABLE : 0);
@@ -137,9 +137,9 @@ void EServer::SendPacket(bool _reliable, const char* _dataStr, ENetPeer *_peer, 
 	// enet_host_service()
 }
 
-void EServer::RegisterClient(ENetEvent _event)
+enet_uint32 EServer::RegisterClient(ENetEvent _event)
 {
-	if (_event.packet == nullptr) return;
+	if (_event.packet == nullptr) return 0;
 	
 	std::string _clientData = (char*)_event.packet->data;
 	std::string _clientIP = Utils::Utils::HexaDumpReverseToIP(_event.peer->address.host);
@@ -149,7 +149,7 @@ void EServer::RegisterClient(ENetEvent _event)
 	if (_splitData.empty())
 	{
 		printf("ERROR on ADD clients \n");
-		return;
+		return 0;
 	}
 
 	std::string _name = _splitData[1];
@@ -164,6 +164,7 @@ void EServer::RegisterClient(ENetEvent _event)
 	};
 
 	clients[_id] = _client;
+	return _id;
 }
 
 void EServer::UnRegisterClient(ENetEvent _event)
@@ -203,8 +204,14 @@ void EServer::ShowConnectedUser()
 	}
 }
 
-void EServer::SendToken(ENetPeer _peer) const
+void EServer::SendTokenToClient(enet_uint32 _clientID)
 {
-	std::string _token = "tokent-osef-test";
-	//SendPacket(true, _token,,);
+	if (_clientID == 0) return;
+
+	
+	EServerClientData _client = clients[_clientID];
+	
+	std::string _token = "TOKEN:"+std::to_string(_client.id);
+	
+	BroadcastPacket(true, _token.c_str());
 }
