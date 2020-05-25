@@ -15,6 +15,7 @@ ENetPeer* EClient::GetPeer() const
 
 EClient::EClient(const char* _id)
 {
+	token = 0;
 	name = _id;
 	Init();
 	Setup();
@@ -122,7 +123,12 @@ void EClient::Tick()
 
 void EClient::SetToken(std::string _strData)
 {
-	std:std::cout << "RECEIVE TOKEN" << std::endl;
+	if (token != 0) return; // not mine
+	std::vector<std::string> _datas = Utils::Utils::SplitString(_strData, DELIMITER);
+
+	token = strtoul(_datas[1].c_str(), NULL, 10);
+	
+	std:std::cout << "RECEIVE TOKEN : " << std::to_string(token) <<  std::endl;
 }
 
 void EClient::SendPacket(bool _reliable, const char* _dataStr)

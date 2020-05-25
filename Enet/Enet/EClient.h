@@ -9,7 +9,7 @@ private:
 	std::string name;
 	ENetHost* host;
 	ENetPeer* peer;
-	std::string serverToken;
+	enet_uint32 token;
 	
 	void Init();
 	void Setup();

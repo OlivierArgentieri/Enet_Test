@@ -1,1 +1,6 @@
-﻿  Enet.vcxproj -> D:\Projets\PullGithub\Enet_Test\Enet\Debug\Enet.exe
+﻿  EClient.cpp
+D:\Projets\PullGithub\Enet_Test\Enet\Enet\EClient.cpp(117,11): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'void *'
+D:\Projets\PullGithub\Enet_Test\Enet\Enet\EClient.cpp(131,5): warning C4102: 'std': unreferenced label
+  Main.cpp
+  Generating Code...
+  Enet.vcxproj -> D:\Projets\PullGithub\Enet_Test\Enet\Debug\Enet.exe
