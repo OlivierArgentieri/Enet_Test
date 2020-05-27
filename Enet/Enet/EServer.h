@@ -4,7 +4,16 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <list>
 
+class EClientData
+{
+public:
+
+	EClientData(ENetPeer* _peer, const char* _name){peer = _peer;name = _name;}
+	std::string name;
+	ENetPeer* peer;
+};
 
 struct EServerClientData
 {
@@ -18,10 +27,10 @@ class EServer : public EObject
 {
 
 private:
+	std::list<EClientData*> clientDatas;
 	std::map<enet_uint32, EServerClientData> clients;
 	ENetHost* host;
 	ENetPeer* peer;
-
 
 	void Init();
 	void Setup();
@@ -37,6 +46,8 @@ public:
 	ENetPeer* GetPeer() const override;
 	void Tick() override;
 	void CleanUp() override;
+	void RegisterPeer(ENetPeer* _peer);
+	void UnRegisterPeer(ENetPeer* _peer);
 	void Disconnect() override;
 	void BroadcastPacket(bool _reliable, const char* _dataStr);
 	void SendPacket(bool _reliable, const char* _dataStr, ENetPeer* _peer, ENetHost* _host) const ;

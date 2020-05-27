@@ -67,18 +67,25 @@ void EServer::Tick()
 			printf("A new client connected from %s:%u\n",
 				Utils::Utils::HexaDumpReverseToIP(event.peer->address.host).c_str(),
 				event.peer->address.port);
-
+			
+			RegisterPeer(event.peer);
 			/* Store any relevant client information here. */
 			//event.peer->data = (void*)"Client information";
 			break;
 
 		case ENET_EVENT_TYPE_RECEIVE:
+		{
+			EClientData* _client = static_cast<EClientData*>(event.peer->data);
+			const char* _sender = _client ? _client->name.c_str() : "Server";
+
 			printf("A packet of length %u containing %s was received from %s on channel %u.\n",
 				event.packet->dataLength,
 				event.packet->data,
-				Utils::Utils::HexaDumpReverseToIP(event.peer->address.host).c_str(),
+				_sender,
 				event.channelID);
-
+		}
+			
+			/*
 			packet_data = (char*)event.packet->data;
 			if (packet_data.substr(0, packet_data.find(_delimiter)) == "CNX")
 			{
@@ -88,7 +95,7 @@ void EServer::Tick()
 
 			if (packet_data.substr(0, packet_data.find(_delimiter)) == "DCNX")
 				UnRegisterClient(event);
-
+			*/
 			
 			/* Clean up the packet now that we're done using it. */
 			enet_packet_destroy(event.packet);
@@ -97,7 +104,7 @@ void EServer::Tick()
 		case ENET_EVENT_TYPE_DISCONNECT:
 			printf("%s disconnected.\n", event.peer->data);
 			/* Reset the peer's client information. */
-			event.peer->data = NULL;
+			event.peer->data = nullptr;
 		}
 	}
 }
@@ -108,6 +115,26 @@ void EServer::CleanUp()
 	host = nullptr;
 }
 
+void EServer::RegisterPeer(ENetPeer* _peer)
+{
+	if (_peer == nullptr) return;
+
+	std::string _name = "Client" + std::to_string(clientDatas.size());
+	EClientData* _client = new EClientData(_peer, _name.c_str());
+	_client->peer->data = _client;
+	clientDatas.push_back(_client);
+
+	
+}
+void EServer::UnRegisterPeer(ENetPeer* _peer)
+{
+	if (_peer == nullptr) return;
+	EClientData* _client = static_cast<EClientData*>(_peer->data);
+
+	delete _client;
+
+	_peer = nullptr;
+}
 void EServer::Disconnect()
 {
 }
@@ -186,6 +213,7 @@ void EServer::UnRegisterClient(ENetEvent _event)
 
 	clients.erase(_id);
 }
+
 
 
 void EServer::ShowConnectedUser()

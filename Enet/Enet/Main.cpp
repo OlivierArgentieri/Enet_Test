@@ -61,6 +61,7 @@ int main()
 
 		switch (lastKey)
 		{
+			
 		case VK_ESCAPE:
 			bContinue = false;
 			break;

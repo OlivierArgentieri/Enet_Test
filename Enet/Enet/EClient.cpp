@@ -2,7 +2,6 @@
 #include "EClient.h"
 #include <iostream>
 #include "Utils.h"
-
 ENetHost* EClient::GetHost() const
 {
 	return host;
@@ -128,7 +127,11 @@ void EClient::SetToken(std::string _strData)
 
 	token = strtoul(_datas[1].c_str(), NULL, 10);
 	
-	std:std::cout << "RECEIVE TOKEN : " << std::to_string(token) <<  std::endl;
+	std::cout << "RECEIVE TOKEN : " << std::to_string(token) <<  std::endl;
+
+
+	
+	std::cout << "SHA-1 :" << "" << std::endl;
 }
 
 void EClient::SendPacket(bool _reliable, const char* _dataStr)

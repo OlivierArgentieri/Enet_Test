@@ -1,6 +1,9 @@
 #include "Utils.h"
 #include <sstream>
 #include <iostream>
+//#include <cryptocpp/hex.h>
+//#include <cryptocpp/sha.h>
+//#include <cryptocpp/filters.h>
 
 std::vector<std::string> Utils::Utils::SplitString(std::string _str, char _delimiter)
 {
@@ -39,3 +42,18 @@ std::string Utils::Utils::HexaDumpReverseToIP(unsigned int _reverseHexadump)
 
 	return _ip;
 }
+
+/*
+std::string Utils::Utils::StringToSha1(std::string _str)
+{
+	std::string string(""); // UTF-8 encoded
+
+	CryptoPP::SHA1 sha1;
+	std::string hash;
+
+	CryptoPP::StringSource(_str, true, new CryptoPP::HashFilter(sha1, new CryptoPP::HexEncoder(new CryptoPP::StringSink(hash))));
+
+
+	std::cout << hash << std::endl;
+	return hash;
+}*/
