@@ -2,6 +2,8 @@
 #include "EClient.h"
 #include <iostream>
 #include "Utils.h"
+#include "EPacketData.h"
+
 ENetHost* EClient::GetHost() const
 {
 	return host;
@@ -136,7 +138,21 @@ void EClient::SetToken(std::string _strData)
 
 void EClient::SendPacket(bool _reliable, const char* _dataStr)
 {
-	MyEnet::ENet::SendPacket(this, _reliable, _dataStr);
+	EPacketData _packetData;
+	_packetData.SetStringContent(_dataStr);
+	// Create a reliable packet of content "_dataStr" 
+	unsigned int _dataSize = 0;
+	void* _data = _packetData.Serialize(_dataSize);
+	ENetPacket* packet = enet_packet_create(_dataStr, strlen(_dataStr) + 1, _reliable ? ENET_PACKET_FLAG_RELIABLE : 0);
+
+	/* Send the packet to the peer over channel id 0. /
+	/ One could also broadcast the packet by         /
+	/ enet_host_broadcast (host, 0, packet);         /*/
+	enet_peer_send(_object->GetPeer(), 0, packet);
+
+	/* One could just use enet_host_service() instead. */
+	enet_host_flush(_object->GetHost());
+	// enet_host_service()
 }
 
 

@@ -103,7 +103,7 @@ void MyEnet::ENet::SendPacket(bool _reliable, const char* _dataStr) const
 	// enet_host_service()
 }
 
-void MyEnet::ENet::SendPacket(EObject* _object, bool _reliable, const char* _dataStr)
+void MyEnet::ENet::SendPacket(EObject* _object, bool _reliable, void* _dataStr)
 {
 	if (_object == nullptr) return;
 	// Create a reliable packet of content "_dataStr" 
