@@ -1,7 +1,6 @@
 #include "EPacketData.h"
 #include <iostream>
-
-
+#include <json.hpp>
 
 EPacketData::EPacketData()
 {
@@ -36,6 +35,17 @@ void EPacketData::SetStringContent(const char* _string)
 {
 	content = _string;
 	type = Type::String;
+	isValid = true;
+}
+
+void EPacketData::SetJsonContent(const char* _string)
+{
+	json::JSON obj;
+	obj["packetData"] = json::Object();
+	obj["packetData"]["Content"] = _string;
+
+	content = obj.dump();
+	type = Type::JSon;
 	isValid = true;
 }
 
@@ -87,6 +97,16 @@ void EPacketData::Deserialize(void* _data, int _size)
 		char* contentStr = static_cast<char*>(_data);
 		content = contentStr;
 
+		isValid = true;
+	}
+
+	if (type == Type::JSon)
+	{
+		// then read the content according to the packet type
+		char* contentStr = static_cast<char*>(_data);
+		json::JSON out = json::JSON::Load(contentStr);
+		content = out["packetData"]["Content"].ToString();
+		std::cout << out["packetData"]["Content"].ToString() << "TEEEEEST" << std::endl;
 		isValid = true;
 	}
 }

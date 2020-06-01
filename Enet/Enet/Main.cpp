@@ -6,7 +6,7 @@
 #include "Enet.h"
 #include "EClient.h"
 #include "EServer.h"
-#include "json.hpp"
+
 int main()
 {
 	EObject* _networkLayer = nullptr;

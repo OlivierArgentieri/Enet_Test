@@ -115,7 +115,7 @@ void MyEnet::ENet::SendPacket(EObject* _object, bool _reliable, const char* _dat
 	if (_object == nullptr) return;
 
 	EPacketData _packetData;
-	_packetData.SetStringContent(_dataStr);
+	_packetData.SetJsonContent(_dataStr);
 	// Create a reliable packet of content "_dataStr" 
 	unsigned int _dataSize = 0;
 	void* _data = _packetData.Serialize(_dataSize);

@@ -124,7 +124,7 @@ void EServer::Disconnect()
 void EServer::BroadcastPacket(bool _reliable, const char* _dataStr)
 {
 	EPacketData _packetData;
-	_packetData.SetStringContent(_dataStr);
+	_packetData.SetJsonContent(_dataStr);
 
 	// Create a reliable packet of content "_dataStr" 
 	unsigned int _dataSize = 0;
