@@ -106,7 +106,6 @@ void EPacketData::Deserialize(void* _data, int _size)
 		char* contentStr = static_cast<char*>(_data);
 		json::JSON out = json::JSON::Load(contentStr);
 		content = out["packetData"]["Content"].ToString();
-		std::cout << out["packetData"]["Content"].ToString() << "TEEEEEST" << std::endl;
 		isValid = true;
 	}
 }
