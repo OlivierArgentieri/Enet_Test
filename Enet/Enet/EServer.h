@@ -46,12 +46,13 @@ public:
 	ENetPeer* GetPeer() const override;
 	void Tick() override;
 	void CleanUp() override;
-	void RegisterPeer(ENetPeer* _peer);
-	void UnRegisterPeer(ENetPeer* _peer);
+	virtual void RegisterPeer(ENetPeer* _peer);
+	virtual void UnRegisterPeer(ENetPeer* _peer);
 	void Disconnect() override;
 	void BroadcastPacket(bool _reliable, const char* _dataStr);
 	void SendPacket(bool _reliable, const char* _dataStr, ENetPeer* _peer, ENetHost* _host) const ;
 
 	void ShowConnectedUser();
 	void SendTokenToClient(enet_uint32 _clientID);
+	void ReceiveData(const ENetEvent& _event) override;
 };

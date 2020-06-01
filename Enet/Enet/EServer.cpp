@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <string>
 #include "Utils.h"
+#include "EPacketData.h"
 
 
 EServer::EServer()
@@ -63,48 +64,19 @@ void EServer::Tick()
 	{
 		switch (event.type)
 		{
-		case ENET_EVENT_TYPE_CONNECT:
-			printf("A new client connected from %s:%u\n",
-				Utils::Utils::HexaDumpReverseToIP(event.peer->address.host).c_str(),
-				event.peer->address.port);
-			
+		case ENET_EVENT_TYPE_CONNECT:			
 			RegisterPeer(event.peer);
 			/* Store any relevant client information here. */
 			//event.peer->data = (void*)"Client information";
 			break;
 
 		case ENET_EVENT_TYPE_RECEIVE:
-		{
-			EClientData* _client = static_cast<EClientData*>(event.peer->data);
-			const char* _sender = _client ? _client->name.c_str() : "Server";
-
-			printf("A packet of length %u containing %s was received from %s on channel %u.\n",
-				event.packet->dataLength,
-				event.packet->data,
-				_sender,
-				event.channelID);
-		}
-			
-			/*
-			packet_data = (char*)event.packet->data;
-			if (packet_data.substr(0, packet_data.find(_delimiter)) == "CNX")
-			{
-				enet_uint32 _clientId = RegisterClient(event);
-				SendTokenToClient(_clientId);
-			}
-
-			if (packet_data.substr(0, packet_data.find(_delimiter)) == "DCNX")
-				UnRegisterClient(event);
-			*/
-			
-			/* Clean up the packet now that we're done using it. */
-			enet_packet_destroy(event.packet);
+			ReceiveData(event);
 			break;
 
 		case ENET_EVENT_TYPE_DISCONNECT:
-			printf("%s disconnected.\n", event.peer->data);
-			/* Reset the peer's client information. */
-			event.peer->data = nullptr;
+			UnRegisterPeer(event.peer);
+			break;
 		}
 	}
 }
@@ -124,7 +96,11 @@ void EServer::RegisterPeer(ENetPeer* _peer)
 	_client->peer->data = _client;
 	clientDatas.push_back(_client);
 
-	
+	printf("A new client %s connected from %x:%u.\n",
+		_client->name.c_str(),
+		_peer->address.host,
+		_peer->address.port);
+
 }
 void EServer::UnRegisterPeer(ENetPeer* _peer)
 {
@@ -132,17 +108,29 @@ void EServer::UnRegisterPeer(ENetPeer* _peer)
 	EClientData* _client = static_cast<EClientData*>(_peer->data);
 
 	delete _client;
-
+	
 	_peer = nullptr;
 }
+
+void EServer::ReceiveData(const ENetEvent& _event)
+{
+	MyEnet::ENet::ReceiveData(_event);
+}
+
 void EServer::Disconnect()
 {
 }
 
 void EServer::BroadcastPacket(bool _reliable, const char* _dataStr)
 {
+	EPacketData _packetData;
+	_packetData.SetStringContent(_dataStr);
+
 	// Create a reliable packet of content "_dataStr" 
-	ENetPacket* packet = enet_packet_create(_dataStr, strlen(_dataStr) + 1, _reliable ? ENET_PACKET_FLAG_RELIABLE : 0);
+	unsigned int _dataSize = 0;
+	void* _data = _packetData.Serialize(_dataSize);
+	// Create a reliable packet of content "_dataStr" 
+	ENetPacket* packet = enet_packet_create(_data, _dataSize, _reliable ? ENET_PACKET_FLAG_RELIABLE : 0);
 
 	enet_host_broadcast(host, 0, packet);
 
@@ -213,7 +201,6 @@ void EServer::UnRegisterClient(ENetEvent _event)
 
 	clients.erase(_id);
 }
-
 
 
 void EServer::ShowConnectedUser()

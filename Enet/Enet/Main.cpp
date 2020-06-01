@@ -6,15 +6,13 @@
 #include "Enet.h"
 #include "EClient.h"
 #include "EServer.h"
-
+#include "json.hpp"
 int main()
 {
 	EObject* _networkLayer = nullptr;
 	EClient* _client = nullptr;
 	EServer* _server = nullptr;
-
-	
-	//return MyEnet::ENet::Main();
+		
 	
 	char choice;
 	std::cin >> choice;

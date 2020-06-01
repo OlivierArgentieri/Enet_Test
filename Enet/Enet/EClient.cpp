@@ -2,7 +2,6 @@
 #include "EClient.h"
 #include <iostream>
 #include "Utils.h"
-#include "EPacketData.h"
 
 ENetHost* EClient::GetHost() const
 {
@@ -51,15 +50,9 @@ void EClient::Connect(const char* _hostname, int _port, int _timeout)
 	ENetAddress address;
 	ENetEvent event = ENetEvent();
 
-	std::string _cnxStr = "CNX:" + name + ":" + "testID";
-	
 	/* Connect to some.server.net:1234. */
 	enet_address_set_host(&address, _hostname);
 	address.port = _port;
-
-	// create packet of user data
-	event.packet = enet_packet_create("test", strlen("test") + 1, true? ENET_PACKET_FLAG_RELIABLE : 0);
-	//event.peer->data = (void*)"test";
 
 	/* Initiate the connection, allocating the two channels 0 and 1. */
 	peer = enet_host_connect(host, &address, 2, 0);
@@ -72,8 +65,6 @@ void EClient::Connect(const char* _hostname, int _port, int _timeout)
 	if (enet_host_service(host, &event, _timeout) > 0 && event.type == ENET_EVENT_TYPE_CONNECT)
 	{
 		printf("Connection to %s:%i succeeded.", _hostname, _port);
-		
-		SendPacket(true, _cnxStr.c_str());
 	}
 	else
 	{
@@ -99,19 +90,7 @@ void EClient::Tick()
 			break;
 
 		case ENET_EVENT_TYPE_RECEIVE:
-			printf("A packet of length %u containing %s was received from %s on channel %u.\n",
-				event.packet->dataLength,
-				event.packet->data,
-				Utils::Utils::HexaDumpReverseToIP(event.peer->address.host).c_str(),
-				event.channelID);
-
-			packet_data = (char*)event.packet->data;
-
-			if (packet_data.substr(0, packet_data.find(DELIMITER)) == "TOKEN")
-				SetToken(packet_data);
-			
-			/* Clean up the packet now that we're done using it. */
-			enet_packet_destroy(event.packet);
+			ReceiveData(event);
 			break;
 
 		case ENET_EVENT_TYPE_DISCONNECT:
@@ -130,35 +109,34 @@ void EClient::SetToken(std::string _strData)
 	token = strtoul(_datas[1].c_str(), NULL, 10);
 	
 	std::cout << "RECEIVE TOKEN : " << std::to_string(token) <<  std::endl;
-
-
 	
 	std::cout << "SHA-1 :" << "" << std::endl;
 }
 
 void EClient::SendPacket(bool _reliable, const char* _dataStr)
 {
-	EPacketData _packetData;
-	_packetData.SetStringContent(_dataStr);
-	// Create a reliable packet of content "_dataStr" 
-	unsigned int _dataSize = 0;
-	void* _data = _packetData.Serialize(_dataSize);
-	ENetPacket* packet = enet_packet_create(_dataStr, strlen(_dataStr) + 1, _reliable ? ENET_PACKET_FLAG_RELIABLE : 0);
-
-	/* Send the packet to the peer over channel id 0. /
-	/ One could also broadcast the packet by         /
-	/ enet_host_broadcast (host, 0, packet);         /*/
-	enet_peer_send(_object->GetPeer(), 0, packet);
-
-	/* One could just use enet_host_service() instead. */
-	enet_host_flush(_object->GetHost());
-	// enet_host_service()
+	MyEnet::ENet::SendPacket(this, _reliable, _dataStr);
 }
 
 
 bool EClient::IsConnected()
 {
 	return peer != nullptr;
+}
+
+void EClient::ReceiveData(const ENetEvent& _event)
+{
+	MyEnet::ENet::ReceiveData(_event);
+}
+
+void EClient::RegisterPeer(ENetPeer* _peer)
+{
+	
+}
+
+void EClient::UnRegisterPeer(ENetPeer* _peer)
+{
+	
 }
 
 void EClient::CleanUp()

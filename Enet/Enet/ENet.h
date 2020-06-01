@@ -47,7 +47,7 @@ namespace MyEnet
 		void Update();
 		static void Tick(EObject* _object);
 		static void SendPacket(EObject* _object, bool _reliable, const char* _dataStr);
-
+		static void ReceiveData(const ENetEvent& event);
 
 		static int Main();
 

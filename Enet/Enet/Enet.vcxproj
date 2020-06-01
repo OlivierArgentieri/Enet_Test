@@ -72,7 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Projets\PullGithub\Enet_Test\Enet\Include\cryptocpp;D:\Projets\PullGithub\Enet_Test\Enet\Include;$(IncludePath);D:\Projets\PullGithub\Enet_Test\Enet\Include\cryptoCpp</IncludePath>
+    <IncludePath>D:\Projets\PullGithub\Enet_Test\Enet\Include\Json;D:\Projets\PullGithub\Enet_Test\Enet\Include;$(IncludePath);D:\Projets\PullGithub\Enet_Test\Enet\Include\cryptoCpp</IncludePath>
     <LibraryPath>D:\Projets\PullGithub\Enet_Test\Enet\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -80,7 +80,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\Projets\PullGithub\Enet_Test\Enet\Include\cryptocpp;D:\Projets\PullGithub\Enet_Test\Enet\Include\enet;$(IncludePath);D:\Projets\PullGithub\Enet_Test\Enet\Include\cryptoCpp</IncludePath>
+    <IncludePath>D:\Projets\PullGithub\Enet_Test\Enet\Include\Json;D:\Projets\PullGithub\Enet_Test\Enet\Include\enet;$(IncludePath);D:\Projets\PullGithub\Enet_Test\Enet\Include\cryptoCpp</IncludePath>
     <LibraryPath>D:\Projets\PullGithub\Enet_Test\Enet\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include <stdio.h>
 #include "EObject.h"
+#include "EPacketData.h"
+#include "EServer.h"
 
 MyEnet::ENet::ENet()
 {}
@@ -90,12 +92,17 @@ void MyEnet::ENet::DisconnectClient()
 
 void MyEnet::ENet::SendPacket(bool _reliable, const char* _dataStr) const
 {
-	// Create a reliable packet of content "_dataStr" 
-	ENetPacket * packet = enet_packet_create(_dataStr, strlen(_dataStr) + 1, _reliable ? ENET_PACKET_FLAG_RELIABLE : 0);
+	EPacketData packetData;
+	packetData.SetStringContent(_dataStr);
 
-	/* Send the packet to the peer over channel id 0. /
-	/ One could also broadcast the packet by         /
-	/ enet_host_broadcast (host, 0, packet);         /*/
+	// Create a reliable packet of content "_dataStr" 
+	unsigned int dataSize = 0;
+	void* data = packetData.Serialize(dataSize);
+	ENetPacket* packet = enet_packet_create(data, dataSize, _reliable ? ENET_PACKET_FLAG_RELIABLE : 0);
+
+	/* Send the packet to the peer over channel id 0. */
+	/* One could also broadcast the packet by         */
+	/* enet_host_broadcast (host, 0, packet);         */
 	enet_peer_send(m_peer, 0, packet);
 
 	/* One could just use enet_host_service() instead. */
@@ -103,11 +110,17 @@ void MyEnet::ENet::SendPacket(bool _reliable, const char* _dataStr) const
 	// enet_host_service()
 }
 
-void MyEnet::ENet::SendPacket(EObject* _object, bool _reliable, void* _dataStr)
+void MyEnet::ENet::SendPacket(EObject* _object, bool _reliable, const char* _dataStr)
 {
 	if (_object == nullptr) return;
+
+	EPacketData _packetData;
+	_packetData.SetStringContent(_dataStr);
 	// Create a reliable packet of content "_dataStr" 
-	ENetPacket* packet = enet_packet_create(_dataStr, strlen(_dataStr) + 1, _reliable ? ENET_PACKET_FLAG_RELIABLE : 0);
+	unsigned int _dataSize = 0;
+	void* _data = _packetData.Serialize(_dataSize);
+	// Create a reliable packet of content "_dataStr" 
+	ENetPacket* packet = enet_packet_create(_data, _dataSize, _reliable ? ENET_PACKET_FLAG_RELIABLE : 0);
 
 	/* Send the packet to the peer over channel id 0. /
 	/ One could also broadcast the packet by         /
@@ -117,6 +130,30 @@ void MyEnet::ENet::SendPacket(EObject* _object, bool _reliable, void* _dataStr)
 	/* One could just use enet_host_service() instead. */
 	enet_host_flush(_object->GetHost());
 	// enet_host_service()
+}
+
+void MyEnet::ENet::ReceiveData(const ENetEvent& event)
+{
+	EClientData* _client = static_cast<EClientData*>(event.peer->data);
+	const char* _sender = _client ? _client->name.c_str() : "Server";
+
+
+	EPacketData _packetData;
+	_packetData.Deserialize(event.packet->data, event.packet->dataLength);
+	if (_packetData.IsValid())
+		printf("A packet of length %u containing %s was received from %s on channel %u.\n",
+			event.packet->dataLength,
+			_packetData.GetContent(),
+			_sender,
+			event.channelID);
+	else
+		printf("An invalid packet of length %u was received from %s on channel %u.\n",
+			event.packet->dataLength,
+			_sender,
+			event.channelID);
+
+	/* Clean up the packet now that we're done using it. */
+	enet_packet_destroy(event.packet);
 }
 
 void MyEnet::ENet::BroadcastPacket(bool _reliable, const char * _dataStr) const

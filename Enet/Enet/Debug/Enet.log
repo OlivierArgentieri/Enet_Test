@@ -1,5 +1,2 @@
 ﻿  EServer.cpp
-D:\Projets\PullGithub\Enet_Test\Enet\Enet\EServer.cpp(105,11): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'void *'
-  Main.cpp
-  Generating Code...
   Enet.vcxproj -> D:\Projets\PullGithub\Enet_Test\Enet\Debug\Enet.exe

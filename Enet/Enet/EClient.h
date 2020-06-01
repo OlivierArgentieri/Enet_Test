@@ -5,6 +5,8 @@
 
 class EClient : public EObject
 {
+public:
+	
 private:
 	std::string name;
 	ENetHost* host;
@@ -31,4 +33,8 @@ public:
 	void Disconnect() override;
 
 	bool IsConnected();
+
+	void ReceiveData(const ENetEvent& _event) override;
+	void RegisterPeer(ENetPeer* _peer) override;
+	void UnRegisterPeer(ENetPeer* _peer) override;
 };
