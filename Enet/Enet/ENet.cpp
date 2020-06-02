@@ -137,15 +137,23 @@ void MyEnet::ENet::ReceiveData(const ENetEvent& event)
 	EClientData* _client = static_cast<EClientData*>(event.peer->data);
 	const char* _sender = _client ? _client->name.c_str() : "Server";
 
-
 	EPacketData _packetData;
 	_packetData.Deserialize(event.packet->data, event.packet->dataLength);
 	if (_packetData.IsValid())
+	{
 		printf("A packet of length %u containing %s was received from %s on channel %u.\n",
 			event.packet->dataLength,
 			_packetData.GetContent(),
 			_sender,
 			event.channelID);
+
+		if (std::string(_packetData.GetContent()) == std::string("ready"))
+		{
+			_client->isReady = true;
+			std::cout << "set is ready client";
+		}
+	}
+		
 	else
 		printf("An invalid packet of length %u was received from %s on channel %u.\n",
 			event.packet->dataLength,

@@ -13,6 +13,7 @@ public:
 	EClientData(ENetPeer* _peer, const char* _name){peer = _peer;name = _name;}
 	std::string name;
 	ENetPeer* peer;
+	bool isReady;
 };
 
 struct EServerClientData
@@ -54,5 +55,6 @@ public:
 
 	void ShowConnectedUser();
 	void SendTokenToClient(enet_uint32 _clientID);
+	bool IsAllPlayersAreReady();
 	void ReceiveData(const ENetEvent& _event) override;
 };

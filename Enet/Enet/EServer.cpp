@@ -3,6 +3,7 @@
 #include <string>
 #include "Utils.h"
 #include "EPacketData.h"
+#include <iostream>
 
 
 EServer::EServer()
@@ -94,6 +95,8 @@ void EServer::RegisterPeer(ENetPeer* _peer)
 	std::string _name = "Client" + std::to_string(clientDatas.size());
 	EClientData* _client = new EClientData(_peer, _name.c_str());
 	_client->peer->data = _client;
+	
+	
 	clientDatas.push_back(_client);
 
 	printf("A new client %s connected from %x:%u.\n",
@@ -115,6 +118,12 @@ void EServer::UnRegisterPeer(ENetPeer* _peer)
 void EServer::ReceiveData(const ENetEvent& _event)
 {
 	MyEnet::ENet::ReceiveData(_event);
+
+	if (IsAllPlayersAreReady())
+	{
+		std::cout << "all ready" << std::endl;
+		BroadcastPacket(true, "allReady");
+	}
 }
 
 void EServer::Disconnect()
@@ -205,7 +214,7 @@ void EServer::UnRegisterClient(ENetEvent _event)
 
 void EServer::ShowConnectedUser()
 {
-	if(clients.empty())
+	if(clientDatas.empty())
 	{
 		printf("0 Clients Connected \n");
 		return;
@@ -213,9 +222,9 @@ void EServer::ShowConnectedUser()
 	
 	printf("Connected Clients: \n");
 
-	for (std::pair<enet_uint32, EServerClientData> _client : clients)
+	for (EClientData* _client : clientDatas)
 	{
-		printf("%s with id : %u and IP : %s \n", clients[_client.first].name.c_str(), clients[_client.first].id, clients[_client.first].ip.c_str());
+		printf(" with name : %s \n", _client->name.c_str());
 	}
 }
 
@@ -229,4 +238,14 @@ void EServer::SendTokenToClient(enet_uint32 _clientID)
 	std::string _token = "TOKEN:"+std::to_string(_client.id);
 	
 	BroadcastPacket(true, _token.c_str());
+}
+
+bool EServer::IsAllPlayersAreReady()
+{
+	for (EClientData* _client : clientDatas)
+	{
+		if (!_client->isReady)
+			return false;
+	}
+	return true;
 }
