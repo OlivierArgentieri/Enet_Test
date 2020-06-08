@@ -28,7 +28,7 @@ EClient::~EClient()
 
 void EClient::Init()
 {
-	MyEnet::ENet::Initialize();
+	//MyEnet::ENet::Initialize();
 }
 
 void EClient::Setup()
@@ -115,7 +115,7 @@ void EClient::SetToken(std::string _strData)
 
 void EClient::SendPacket(bool _reliable, const char* _dataStr)
 {
-	MyEnet::ENet::SendPacket(this, _reliable, _dataStr);
+	//MyEnet::ENet::SendPacket(this, _reliable, _dataStr);
 }
 
 
@@ -126,7 +126,7 @@ bool EClient::IsConnected()
 
 void EClient::ReceiveData(const ENetEvent& _event)
 {
-	MyEnet::ENet::ReceiveData(_event);
+	//MyEnet::ENet::ReceiveData(_event);
 }
 
 void EClient::RegisterPeer(ENetPeer* _peer)

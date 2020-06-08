@@ -1,35 +1,16 @@
 #pragma once
 #include "EObject.h"
 #include "ENet.h"
-#include <vector>
 #include <string>
-#include <map>
 #include <list>
 
-class EClientData
-{
-public:
-
-	EClientData(ENetPeer* _peer, const char* _name){peer = _peer;name = _name;}
-	std::string name;
-	ENetPeer* peer;
-	bool isReady;
-};
-
-struct EServerClientData
-{
-	enet_uint32 id;
-	std::string ip;
-	std::string name;
-};
 
 
 class EServer : public EObject
 {
 
 private:
-	std::list<EClientData*> clientDatas;
-	std::map<enet_uint32, EServerClientData> clients;
+	std::list<ClientData*> clientDatas;
 	ENetHost* host;
 	ENetPeer* peer;
 

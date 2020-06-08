@@ -72,7 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>D:\Projets\PullGithub\Enet_Test\Enet\Include\Json;D:\Projets\PullGithub\Enet_Test\Enet\Include;$(IncludePath);D:\Projets\PullGithub\Enet_Test\Enet\Include\cryptoCpp</IncludePath>
+    <IncludePath>D:\Projets\PullGithub\Enet_Test\Enet\Include;$(IncludePath);D:\Projets\PullGithub\Enet_Test\Enet\Include\cryptoCpp;D:\Projets\PullGithub\Enet_Test\Enet\Include\glm</IncludePath>
     <LibraryPath>D:\Projets\PullGithub\Enet_Test\Enet\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -80,7 +80,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>D:\Projets\PullGithub\Enet_Test\Enet\Include\Json;D:\Projets\PullGithub\Enet_Test\Enet\Include\enet;$(IncludePath);D:\Projets\PullGithub\Enet_Test\Enet\Include\cryptoCpp</IncludePath>
+    <IncludePath>D:\Projets\PullGithub\Enet_Test\Enet\Include\enet;$(IncludePath);D:\Projets\PullGithub\Enet_Test\Enet\Include\cryptoCpp;D:\Projets\PullGithub\Enet_Test\Enet\Include\glm</IncludePath>
     <LibraryPath>D:\Projets\PullGithub\Enet_Test\Enet\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -95,7 +95,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>D:\Projets\PullGithub\Enet_Test\Enet\Include\enet;D:\Projets\PullGithub\Enet_Test\Enet\Include\cryptocpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalUsingDirectories>D:\Projets\PullGithub\Enet_Test\Enet\Include\cryptocpp;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <AdditionalUsingDirectories>D:\Projets\PullGithub\Enet_Test\Enet\Include\glm;D:\Projets\PullGithub\Enet_Test\Enet\Include\cryptocpp;D:\Projets\PullGithub\Enet_Test\Enet\Include\Json;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -129,7 +129,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>D:\Projets\PullGithub\Enet_Test\Enet\Include\enet;D:\Projets\PullGithub\Enet_Test\Enet\Include\cryptocpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalUsingDirectories>D:\Projets\PullGithub\Enet_Test\Enet\Include\cryptocpp;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
+      <AdditionalUsingDirectories>D:\Projets\PullGithub\Enet_Test\Enet\Include\glm;D:\Projets\PullGithub\Enet_Test\Enet\Include\cryptocpp;D:\Projets\PullGithub\Enet_Test\Enet\Include\Json;%(AdditionalUsingDirectories)</AdditionalUsingDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -159,18 +159,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Include\Json\json.cpp" />
+    <ClCompile Include="BoardGameServer.cpp" />
     <ClCompile Include="EClient.cpp" />
     <ClCompile Include="ENet.cpp" />
-    <ClCompile Include="EPacketData.cpp" />
+    <ClCompile Include="PacketData.cpp" />
     <ClCompile Include="EServer.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Include\Json\json.hpp" />
+    <ClInclude Include="BoardGameServer.h" />
+    <ClInclude Include="ClientData.h" />
     <ClInclude Include="EClient.h" />
     <ClInclude Include="ENet.h" />
     <ClInclude Include="EObject.h" />
-    <ClInclude Include="EPacketData.h" />
+    <ClInclude Include="PacketData.h" />
     <ClInclude Include="EServer.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>

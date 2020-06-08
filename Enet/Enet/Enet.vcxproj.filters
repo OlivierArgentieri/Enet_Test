@@ -43,11 +43,23 @@
     <Filter Include="Source Files\Utils">
       <UniqueIdentifier>{9b89d0dc-4f96-40fb-a80d-ce0c362e688c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\EPacketData">
+    <Filter Include="Header Files\PacketData">
       <UniqueIdentifier>{62fcf5fa-436b-44b4-a533-2cee1749b410}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\EPacketData">
+    <Filter Include="Source Files\PacketData">
       <UniqueIdentifier>{9e719081-9bcb-4174-8b81-8303ad95bc1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\BoardGameServer">
+      <UniqueIdentifier>{a285f1c2-6e9d-4dd6-a4fe-462d74a69742}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\BoardGameServer">
+      <UniqueIdentifier>{cf3c4e4f-24e7-4ad6-9077-128e1b44dbe7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Json">
+      <UniqueIdentifier>{391c9ffa-68ae-48e1-b4b1-b1cee4049c80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Json">
+      <UniqueIdentifier>{d6d3a440-8f7b-4b44-85ad-70f1a8c815f9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -66,8 +78,14 @@
     <ClCompile Include="Utils.cpp">
       <Filter>Source Files\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="EPacketData.cpp">
-      <Filter>Source Files\EPacketData</Filter>
+    <ClCompile Include="BoardGameServer.cpp">
+      <Filter>Source Files\BoardGameServer</Filter>
+    </ClCompile>
+    <ClCompile Include="PacketData.cpp">
+      <Filter>Source Files\PacketData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Include\Json\json.cpp">
+      <Filter>Source Files\Json</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -86,8 +104,17 @@
     <ClInclude Include="Utils.h">
       <Filter>Header Files\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="EPacketData.h">
-      <Filter>Header Files\EPacketData</Filter>
+    <ClInclude Include="PacketData.h">
+      <Filter>Header Files\PacketData</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BoardGameServer.h">
+      <Filter>Header Files\BoardGameServer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\Json\json.hpp">
+      <Filter>Header Files\Json</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

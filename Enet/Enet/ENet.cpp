@@ -3,7 +3,7 @@
 #include <cstdlib>
 #include <stdio.h>
 #include "EObject.h"
-#include "EPacketData.h"
+#include "PacketData.h"
 #include "EServer.h"
 
 MyEnet::ENet::ENet()
@@ -92,7 +92,7 @@ void MyEnet::ENet::DisconnectClient()
 
 void MyEnet::ENet::SendPacket(bool _reliable, const char* _dataStr) const
 {
-	EPacketData packetData;
+	PacketData packetData;
 	packetData.SetStringContent(_dataStr);
 
 	// Create a reliable packet of content "_dataStr" 
@@ -110,11 +110,9 @@ void MyEnet::ENet::SendPacket(bool _reliable, const char* _dataStr) const
 	// enet_host_service()
 }
 
-void MyEnet::ENet::SendPacket(EObject* _object, bool _reliable, const char* _dataStr)
+void MyEnet::ENet::SendPacket(bool _reliable, const char* _dataStr)
 {
-	if (_object == nullptr) return;
-
-	EPacketData _packetData;
+	PacketData _packetData;
 	_packetData.SetJsonContent(_dataStr);
 	// Create a reliable packet of content "_dataStr" 
 	unsigned int _dataSize = 0;
@@ -125,44 +123,22 @@ void MyEnet::ENet::SendPacket(EObject* _object, bool _reliable, const char* _dat
 	/* Send the packet to the peer over channel id 0. /
 	/ One could also broadcast the packet by         /
 	/ enet_host_broadcast (host, 0, packet);         /*/
-	enet_peer_send(_object->GetPeer(), 0, packet);
+	enet_peer_send(m_peer, 0, packet);
 
 	/* One could just use enet_host_service() instead. */
-	enet_host_flush(_object->GetHost());
+	enet_host_flush(m_host);
 	// enet_host_service()
 }
 
-void MyEnet::ENet::ReceiveData(const ENetEvent& event)
+void MyEnet::ENet::BroadcastPacket(bool _reliable, const char* _dataStr)
 {
-	EClientData* _client = static_cast<EClientData*>(event.peer->data);
-	const char* _sender = _client ? _client->name.c_str() : "Server";
-
-	EPacketData _packetData;
-	_packetData.Deserialize(event.packet->data, event.packet->dataLength);
-	if (_packetData.IsValid())
-	{
-		printf("A packet of length %u containing %s was received from %s on channel %u.\n",
-			event.packet->dataLength,
-			_packetData.GetContent(),
-			_sender,
-			event.channelID);
-
-		if (std::string(_packetData.GetContent()) == std::string("ready"))
-		{
-			_client->isReady = true;
-			std::cout << "set is ready client";
-		}
-	}
-		
-	else
-		printf("An invalid packet of length %u was received from %s on channel %u.\n",
-			event.packet->dataLength,
-			_sender,
-			event.channelID);
-
-	/* Clean up the packet now that we're done using it. */
-	enet_packet_destroy(event.packet);
 }
+
+std::list<ClientData*> MyEnet::ENet::GetClientDatas() const
+{
+	return clientDatas;
+}
+
 
 void MyEnet::ENet::BroadcastPacket(bool _reliable, const char * _dataStr) const
 {
@@ -172,6 +148,11 @@ void MyEnet::ENet::BroadcastPacket(bool _reliable, const char * _dataStr) const
 	enet_host_broadcast(m_host, 0, packet);
 
 	enet_host_flush(m_host);
+}
+
+void MyEnet::ENet::PushPacket(PacketData* _packetData)
+{
+	m_MessageQueue.push(_packetData);
 }
 
 int MyEnet::ENet::SetupServer()
@@ -216,79 +197,105 @@ bool MyEnet::ENet::IsClientConnected()
 void MyEnet::ENet::Update()
 {
 	ENetEvent event;
+	
 	/* Wait up to 1000 milliseconds for an event. */
-	if(enet_host_service(m_host, &event, 1000) > 0)
+	if (enet_host_service(m_host, &event, 1000) > 0)
 	{
 		switch (event.type)
 		{
 		case ENET_EVENT_TYPE_CONNECT:
-			printf("A new client connected from %x:%u.\n",
-				event.peer->address.host,
-				event.peer->address.port);
-			
-			/* Store any relevant client information here. */
-			event.peer->data = (void*) "Client information";
-			break;
-		case ENET_EVENT_TYPE_RECEIVE:
-			printf("A packet of length %u containing %s was received from %s on channel %u.\n",
-				event.packet->dataLength,
-				event.packet->data,
-				event.peer->data,
-				event.channelID);
-			/* Clean up the packet now that we're done using it. */
-			enet_packet_destroy(event.packet);
-
-			break;
-
-		case ENET_EVENT_TYPE_DISCONNECT:
-			printf("%s disconnected.\n", event.peer->data);
-			/* Reset the peer's client information. */
-			event.peer->data = NULL;
-		}
-	}
-}
-
-void MyEnet::ENet::Tick(EObject* _object)
-{
-	if (_object == nullptr) return;
-	ENetEvent event;
-	std::string packet_data;
-	/* Wait up to 1000 milliseconds for an event. */
-	if (enet_host_service(_object->GetHost(), &event, 1000) > 0)
-	{
-		switch (event.type)
-		{
-		case ENET_EVENT_TYPE_CONNECT:
-			printf("A new client connected from %x:%u from : %s.\n",
-				event.peer->address.host,
-				event.peer->address.port,
-				event.peer->data);
-
+			RegisterPeer(event.peer);
 			/* Store any relevant client information here. */
 			//event.peer->data = (void*)"Client information";
 			break;
-			
-		case ENET_EVENT_TYPE_RECEIVE:
-			printf("A packet of length %u containing %s was received from %s on channel %u.\n",
-				event.packet->dataLength,
-				event.packet->data,
-				event.peer->data,
-				event.channelID);
 
-			packet_data = (char*)event.packet->data;
-			
-			
-			/* Clean up the packet now that we're done using it. */
-			enet_packet_destroy(event.packet);
+		case ENET_EVENT_TYPE_RECEIVE:
+			ReceiveData(event);
 			break;
 
 		case ENET_EVENT_TYPE_DISCONNECT:
-			printf("%s disconnected.\n", event.peer->data);
-			/* Reset the peer's client information. */
-			event.peer->data = NULL;
+			UnregisterPeer(event.peer);
+			break;
 		}
 	}
 }
+
+bool MyEnet::ENet::HasMessage() const
+{
+	return !m_MessageQueue.empty();
+}
+
+PacketData* MyEnet::ENet::ConsumeMessage()
+{
+	PacketData* data = m_MessageQueue.front();
+	m_MessageQueue.pop();
+
+	return data;
+}
+
+void MyEnet::ENet::DisposeMessage(PacketData* _packetData)
+{
+	delete _packetData;
+}
+
+
+void MyEnet::ENet::RegisterPeer(ENetPeer* _peer)
+{
+	if (_peer == nullptr) return;
+
+	std::string _name = "Client" + std::to_string(clientDatas.size());
+	ClientData* _client = new ClientData(_peer, _name.c_str());
+	_client->peer->data = _client;
+
+
+	clientDatas.push_back(_client);
+
+	printf("A new client %s connected from %x:%u.\n",
+		_client->name.c_str(),
+		_peer->address.host,
+		_peer->address.port);
+
+}
+
+
+void MyEnet::ENet::ReceiveData(const ENetEvent& event)
+{
+	ClientData* _client = static_cast<ClientData*>(event.peer->data);
+	const char* _sender = _client ? _client->name.c_str() : "Server";
+
+	PacketData* packetData = new PacketData(event.peer);
+	packetData->Deserialize(event.packet->data, event.packet->dataLength);
+
+	if (packetData->IsValid())
+	{
+		printf("A packet of length %u containing %s was received from %s on channel %u.\n",
+			event.packet->dataLength,
+			packetData->GetContent(),
+			_sender,
+			event.channelID);
+
+		// Record the packet to be able to use it later
+		PushPacket(packetData);
+	}
+	else
+		printf("An invalid packet of length %u was received from %s on channel %u.\n",
+			event.packet->dataLength,
+			_sender,
+			event.channelID);
+
+	/* Clean up the packet now that we're done using it. */
+	enet_packet_destroy(event.packet);
+}
+void MyEnet::ENet::UnregisterPeer(ENetPeer* _peer)
+{
+	if (_peer == nullptr) return;
+	ClientData* _client = static_cast<ClientData*>(_peer->data);
+
+	delete _client;
+
+	_peer = nullptr;
+}
+
 
 
 int MyEnet::ENet::Main()
@@ -299,9 +306,8 @@ int MyEnet::ENet::Main()
 		return EXIT_FAILURE;
 
 	
-	char choice;
-	std::cin >> choice;
-
+	char choice = '2';
+//	std::cin >> choice;
 	switch (choice)
 	{
 	case '1':
@@ -349,35 +355,11 @@ int MyEnet::ENet::Main()
 			break;
 
 		case 'S':
-			if (_networkLayer->IsClient())
-			{
-				std::string myMsg = "UnMessageDeTest";
-				printf("Sending %s to the server.\n", myMsg);
-				_networkLayer->SendPacket(false, myMsg.c_str());
-			}
-			else
-			{
 				std::string myMsg = "UnMessageDeTestBroadcast";
 				printf("Sending %s to all the clients.\n", myMsg);
 
 				_networkLayer->BroadcastPacket(false, myMsg.c_str());
-			}
-			break;
-
-		case 'Q':
-			if (_networkLayer->IsClientConnected())
-			{
-				_networkLayer->DisconnectClient();
-				std::cout << "Press R to reconnect the Client to the server\n";
-			}
-			break;
-
-		case 'R':
-			if (_networkLayer->IsClient())
-			{
-				_networkLayer->ConnectClient();
-				std::cout << "Press Q to disconnect Client\n";
-			}
+			
 			break;
 		}
 	} while (bContinue);

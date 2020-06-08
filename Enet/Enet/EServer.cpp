@@ -2,8 +2,8 @@
 #include <cstdio>
 #include <string>
 #include "Utils.h"
-#include "EPacketData.h"
 #include <iostream>
+#include "PacketData.h"
 
 
 EServer::EServer()
@@ -14,7 +14,7 @@ EServer::EServer()
 
 void EServer::Init()
 {
-	MyEnet::ENet::Initialize();
+	//MyEnet::ENet::Initialize();
 }
 
 void EServer::Setup()
@@ -56,30 +56,6 @@ ENetPeer* EServer::GetPeer() const
 void EServer::Tick()
 {
 	//MyEnet::ENet::Tick(this);
-
-	ENetEvent event;
-	std::string packet_data;
-	std::string _delimiter = ":";
-	/* Wait up to 1000 milliseconds for an event. */
-	if (enet_host_service(host, &event, 1000) > 0)
-	{
-		switch (event.type)
-		{
-		case ENET_EVENT_TYPE_CONNECT:			
-			RegisterPeer(event.peer);
-			/* Store any relevant client information here. */
-			//event.peer->data = (void*)"Client information";
-			break;
-
-		case ENET_EVENT_TYPE_RECEIVE:
-			ReceiveData(event);
-			break;
-
-		case ENET_EVENT_TYPE_DISCONNECT:
-			UnRegisterPeer(event.peer);
-			break;
-		}
-	}
 }
 
 void EServer::CleanUp()
@@ -93,7 +69,7 @@ void EServer::RegisterPeer(ENetPeer* _peer)
 	if (_peer == nullptr) return;
 
 	std::string _name = "Client" + std::to_string(clientDatas.size());
-	EClientData* _client = new EClientData(_peer, _name.c_str());
+	ClientData* _client = new ClientData(_peer, _name.c_str());
 	_client->peer->data = _client;
 	
 	
@@ -108,7 +84,7 @@ void EServer::RegisterPeer(ENetPeer* _peer)
 void EServer::UnRegisterPeer(ENetPeer* _peer)
 {
 	if (_peer == nullptr) return;
-	EClientData* _client = static_cast<EClientData*>(_peer->data);
+	ClientData* _client = static_cast<ClientData*>(_peer->data);
 
 	delete _client;
 	
@@ -117,8 +93,31 @@ void EServer::UnRegisterPeer(ENetPeer* _peer)
 
 void EServer::ReceiveData(const ENetEvent& _event)
 {
-	MyEnet::ENet::ReceiveData(_event);
+	ClientData* _client = static_cast<ClientData*>(_event.peer->data);
+	const char* _sender = _client ? _client->name.c_str() : "Server";
 
+	PacketData* packetData = new PacketData();
+	packetData->Deserialize(_event.packet->data, _event.packet->dataLength);
+
+	if (packetData->IsValid())
+	{
+		printf("A packet of length %u containing %s was received from %s on channel %u.\n",
+			_event.packet->dataLength,
+			packetData->GetContent(),
+			_sender,
+			_event.channelID);
+
+		// Record the packet to be able to use it later
+		//PushPacket(packetData);
+	}
+	else
+		printf("An invalid packet of length %u was received from %s on channel %u.\n",
+			_event.packet->dataLength,
+			_sender,
+			_event.channelID);
+
+	/* Clean up the packet now that we're done using it. */
+	enet_packet_destroy(_event.packet);
 	if (IsAllPlayersAreReady())
 	{
 		std::cout << "all ready" << std::endl;
@@ -132,7 +131,7 @@ void EServer::Disconnect()
 
 void EServer::BroadcastPacket(bool _reliable, const char* _dataStr)
 {
-	EPacketData _packetData;
+	PacketData _packetData;
 	_packetData.SetJsonContent(_dataStr);
 
 	// Create a reliable packet of content "_dataStr" 
@@ -179,8 +178,8 @@ enet_uint32 EServer::RegisterClient(ENetEvent _event)
 	std::string _name = _splitData[1];
 	enet_uint32 _id = _event.peer->connectID;
 
-	
-	EServerClientData _client = EServerClientData
+	/*
+	ServerClientData _client = ServerClientData
 	{
 		_id,
 		_clientIP,
@@ -188,7 +187,7 @@ enet_uint32 EServer::RegisterClient(ENetEvent _event)
 	};
 
 	clients[_id] = _client;
-	return _id;
+	return _id;*/
 }
 
 void EServer::UnRegisterClient(ENetEvent _event)
@@ -205,10 +204,10 @@ void EServer::UnRegisterClient(ENetEvent _event)
 	}
 	
 	enet_uint32 _id = _event.peer->connectID;
-
+	/*
 	if (clients.empty()) return;
 
-	clients.erase(_id);
+	clients.erase(_id);*/
 }
 
 
@@ -222,27 +221,15 @@ void EServer::ShowConnectedUser()
 	
 	printf("Connected Clients: \n");
 
-	for (EClientData* _client : clientDatas)
+	for (ClientData* _client : clientDatas)
 	{
 		printf(" with name : %s \n", _client->name.c_str());
 	}
 }
 
-void EServer::SendTokenToClient(enet_uint32 _clientID)
-{
-	if (_clientID == 0) return;
-
-	
-	EServerClientData _client = clients[_clientID];
-	
-	std::string _token = "TOKEN:"+std::to_string(_client.id);
-	
-	BroadcastPacket(true, _token.c_str());
-}
-
 bool EServer::IsAllPlayersAreReady()
 {
-	for (EClientData* _client : clientDatas)
+	for (ClientData* _client : clientDatas)
 	{
 		if (!_client->isReady)
 			return false;
